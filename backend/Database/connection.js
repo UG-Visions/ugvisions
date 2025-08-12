@@ -1,5 +1,6 @@
 // database/connection.js
-require('dotenv').config();  // Load environment variables from .env file
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') }); // Load environment variables from .env file
 
 const mysql = require('mysql2');
 

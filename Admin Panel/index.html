@@ -1,54 +1,47 @@
-<!-- admin-panel/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Panel</title>
+  <title>Admin Panel - Messages</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 8px; }
-    th { background-color: #eee; }
+    th, td { padding: 10px; border: 1px solid #ddd; }
+    th { background: #f4f4f4; }
   </style>
 </head>
 <body>
-  <h1>Admin Panel - Contact Messages</h1>
-  <table id="messagesTable">
+  <h1>Contact Messages</h1>
+  <table id="messages-table">
     <thead>
-      <tr>
-        <th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Date</th>
-      </tr>
+      <tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th></tr>
     </thead>
     <tbody></tbody>
   </table>
 
   <script>
-    async function loadMessages() {
+    async function fetchMessages() {
       try {
-        const res = await fetch('/admin/messages');
-        const messages = await res.json();
-
-        const tbody = document.querySelector('#messagesTable tbody');
+        const response = await fetch('/admin/messages');
+        if (!response.ok) throw new Error('Failed to fetch messages');
+        const messages = await response.json();
+        const tbody = document.querySelector('#messages-table tbody');
         tbody.innerHTML = '';
-
         messages.forEach(msg => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${msg.id}</td>
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
             <td>${msg.name}</td>
             <td>${msg.email}</td>
             <td>${msg.message}</td>
             <td>${new Date(msg.date).toLocaleString()}</td>
           `;
-          tbody.appendChild(row);
+          tbody.appendChild(tr);
         });
-      } catch (err) {
-        alert('Failed to load messages');
-        console.error(err);
+      } catch (error) {
+        alert(error.message);
       }
     }
-
-    loadMessages();
+    fetchMessages();
   </script>
 </body>
 </html>

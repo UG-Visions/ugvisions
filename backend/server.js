@@ -1,12 +1,14 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors");           // <-- cors require karo yahan
 const pool = require("./database/connection"); // MySQL connection pool
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Use environment PORT or 3000 locally
+const PORT = process.env.PORT || 5000;
 
-// Middleware for parsing JSON and URL-encoded data
+// Middleware
+app.use(cors());                        // <-- cors middleware use karo yahan
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,7 +32,7 @@ app.get("/contact", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/contact.html"));
 });
 
-// Contact form POST handler — save message to DB and optionally JSON (optional JSON part commented)
+// Contact form POST handler — save message to DB
 app.post("/contact", async (req, res) => {
   const { name, email, message } = req.body;
 
@@ -39,18 +41,6 @@ app.post("/contact", async (req, res) => {
   }
 
   const newMessage = { name, email, message, date: new Date().toISOString() };
-
-  /*
-  // Optional: Save message in JSON file — Disabled for hosting compatibility
-  // const filePath = path.join(__dirname, "messages.json");
-  // let messages = [];
-  // if (fs.existsSync(filePath)) {
-  //   const data = fs.readFileSync(filePath, "utf8");
-  //   messages = JSON.parse(data);
-  // }
-  // messages.push(newMessage);
-  // fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
-  */
 
   try {
     await pool.execute(
@@ -83,4 +73,8 @@ app.use((req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
+});
+
+app.get('/test', (req, res) => {
+  res.send('Server is running!');
 });
