@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UG Visions - Contact</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <header class="header">
+    <div class="logo">UG Visions</div>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <main class="contact-section container">
+    <h2>Contact Us</h2>
+    <p>
+      If you have any questions or want to work with us, please fill out the form below
+      or email us directly at
+      <a href="mailto:ugvisions07@gmail.com">ugvisions07@gmail.com</a>.
+    </p>
+
+    <!-- Contact Form -->
+    <form id="contactForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your full name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="your.email@example.com" required />
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div id="formResponse" style="margin-top:10px; font-weight:bold;"></div>
+
+    <!-- Reply note shown after successful message -->
+    <p id="replyNote" style="margin-top:8px; color:#555; font-style: italic; text-align:center; display:none;">
+      You will receive a reply to your message within 24 hours on your email.
+    </p>
+    
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 UG Visions</p>
+    <p>
+      Contact us:
+      <a href="mailto:ugvisions07@gmail.com" title="Email">
+        <i class="fas fa-envelope"></i> ugvisions07@gmail.com
+      </a> |
+      <a href="https://www.instagram.com/ugvisions2025/" target="_blank" rel="noopener noreferrer" title="Instagram">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+    </p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const responseDiv = document.getElementById('formResponse');
+    const replyNote = document.getElementById('replyNote');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        message: form.message.value.trim()
+      };
+
+      try {
+        const res = await fetch('/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const text = await res.text();
+
+        if (res.ok) {
+          responseDiv.style.color = 'green';
+          form.reset();
+          replyNote.style.display = 'block';  // Show reply note on success
+        } else {
+          responseDiv.style.color = 'red';
+          replyNote.style.display = 'none';   // Hide on failure
+        }
+        responseDiv.textContent = text;
+      } catch (error) {
+        responseDiv.style.color = 'red';
+        responseDiv.textContent = 'Network error — please try again later.';
+        replyNote.style.display = 'none';    // Hide on error
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
